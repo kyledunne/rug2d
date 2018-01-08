@@ -1,0 +1,6 @@
+[package]
+name = "rug2d"
+version = "0.1.0"
+authors = ["Kyle Dunne <kyledunne@berkeley.edu>"]
+
+[dependencies]
