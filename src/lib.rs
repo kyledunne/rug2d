@@ -7,5 +7,5 @@ mod tests {
 }
 
 pub fn info() {
-    println!("rug2d: test version")
+    println!("rug2d: test version.")
 }
