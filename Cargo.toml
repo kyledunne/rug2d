@@ -2,7 +2,7 @@
 name = "rug2d"
 version = "0.1.0"
 authors = ["Kyle Dunne <kyledunne@berkeley.edu>"]
-description = "Rust library for creating GUIs and other 2d graphical applications"
+description = "OpenGL-backed library for creating GUIs and other 2d graphical applications"
 repository = "https://github.com/kyledunne/rug2d"
 keywords = ["gui", "graphics", "2d"]
 categories = ["gui", "games", "rendering::graphics-api"]
