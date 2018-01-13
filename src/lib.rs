@@ -1,15 +1,13 @@
 extern crate glutin;
 extern crate gl;
 
+
+
 #[cfg(test)]
 mod tests {
-    extern crate glutin;
-    extern crate gl;
-
     #[test]
     fn it_works() {
-        glutin::EventsLoop::new();
-        println!("rug2d: test version sucessfully executed (from tests::it_works()).");
+        super::test_fn();
         assert_eq!(2 + 2, 4);
     }
 }
@@ -18,3 +16,45 @@ pub fn info() {
     glutin::EventsLoop::new();
     println!("rug2d: test version sucessfully executed.")
 }
+
+pub fn test_fn() {
+    use glutin::GlContext;
+    let mut events_loop = glutin::EventsLoop::new();
+    let window = glutin::WindowBuilder::new()
+        .with_title("Hello, world!")
+        .with_dimensions(1024, 768);
+    let context = glutin::ContextBuilder::new()
+        .with_vsync(true);
+    let gl_window = glutin::GlWindow::new(window, context, &events_loop).unwrap();
+
+    unsafe {
+        gl_window.make_current().unwrap();
+    }
+
+    unsafe {
+        gl::load_with(|symbol| gl_window.get_proc_address(symbol) as *const _);
+        gl::ClearColor(0.0, 1.0, 0.0, 1.0);
+    }
+
+    let mut running = true;
+    while running {
+        events_loop.poll_events(|event| {
+            match event {
+                glutin::Event::WindowEvent{ event, .. } => match event {
+                    glutin::WindowEvent::Closed => running = false,
+                    glutin::WindowEvent::Resized(w, h) => gl_window.resize(w, h),
+                    _ => ()
+                },
+                _ => ()
+            }
+        });
+
+        unsafe {
+            gl::Clear(gl::COLOR_BUFFER_BIT);
+        }
+
+        gl_window.swap_buffers().unwrap();
+    }
+}
+
+
