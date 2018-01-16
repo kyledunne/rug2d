@@ -64,7 +64,7 @@ pub fn init_window(title: &str, w: u32, h: u32) -> Rug2dWindow {
 
     canvas.present();
 
-    let mut event_pump = sdl_context.event_pump().unwrap();
+    let event_pump = sdl_context.event_pump().unwrap();
 
     //'running: loop {
     //::std::thread::sleep(::std::time::Duration::new(0, 1_000_000_000u32 / 60));
@@ -81,7 +81,6 @@ pub struct Rug2dWindow {
 } impl Rug2dWindow {
     pub fn render(&mut self) {
         unsafe {
-            //TODO figure out why this color isn't appearing
             gl::ClearColor(0.6, 0.0, 0.8, 1.0);
             gl::Clear(gl::COLOR_BUFFER_BIT);
         }
