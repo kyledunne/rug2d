@@ -19,11 +19,10 @@ mod tests {
 }
 
 pub fn info() {
-    println!("rug2d: test version sucessfully executed.")
 }
 
 pub fn test_fn() {
-    let mut window = init_window("Sup", 1000, 500);
+    let mut window = init_window("Yoooooo...", 1000, 500);
     'running: loop {
         window.render();
         if window.check_events() {
@@ -35,57 +34,70 @@ pub fn test_fn() {
 }
 
 pub fn init_window(title: &str, w: u32, h: u32) -> Rug2dWindow {
-    let sdl_context: sdl2::Sdl = sdl2::init().unwrap();
+    fn find_sdl_gl_driver() -> Option<u32> {
+        for (index, item) in sdl2::render::drivers().enumerate() {
+            if item.name == "opengl" {
+                return Some(index as u32);
+            }
+        }
+        None
+    }
+
+    let sdl_context = sdl2::init().unwrap();
     let video_subsystem = sdl_context.video().unwrap();
-
-    let gl_attr = video_subsystem.gl_attr();
-    gl_attr.set_context_profile(GLProfile::Core);
-    gl_attr.set_context_version(3, 3);
-
-    let window: sdl2::video::Window = video_subsystem.window(title, w, h)
+    let window = video_subsystem.window(title, w, h)
         .opengl()
         .build()
         .unwrap();
+    let mut canvas: sdl2::render::WindowCanvas = window.into_canvas()
+        .index(find_sdl_gl_driver().unwrap())
+        .build()
+        .unwrap();
 
-    window.gl_create_context().unwrap();
     gl::load_with(|name| video_subsystem.gl_get_proc_address(name) as *const _);
+    canvas.window().gl_set_context_to_current();
 
-    debug_assert_eq!(gl_attr.context_profile(), GLProfile::Core);
-    debug_assert_eq!(gl_attr.context_version(), (3, 3));
+    unsafe {
+        gl::ClearColor(0.6, 0.0, 0.8, 1.0);
+        gl::Clear(gl::COLOR_BUFFER_BIT);
+    }
 
-    let event_pump: sdl2::EventPump = sdl_context.event_pump().unwrap();
+    canvas.present();
+
+    let mut event_pump = sdl_context.event_pump().unwrap();
 
     //'running: loop {
     //::std::thread::sleep(::std::time::Duration::new(0, 1_000_000_000u32 / 60));
 
     Rug2dWindow {
-        window,
+        canvas,
         event_pump,
     }
 }
 
 pub struct Rug2dWindow {
-    window: sdl2::video::Window,
+    canvas: sdl2::render::WindowCanvas,
     event_pump: sdl2::EventPump,
 } impl Rug2dWindow {
-    pub fn render(&self) {
+    pub fn render(&mut self) {
         unsafe {
             //TODO figure out why this color isn't appearing
             gl::ClearColor(0.6, 0.0, 0.8, 1.0);
             gl::Clear(gl::COLOR_BUFFER_BIT);
         }
-        self.window.gl_swap_window();
+        self.canvas.present();
     }
     pub fn check_events(&mut self) -> bool {
+        let mut should_quit = false;
         for event in self.event_pump.poll_iter() {
             match event {
                 Event::Quit {..} | Event::KeyDown { keycode: Some(Keycode::Escape), .. } => {
-                    println!("wow!");
-                    return true;
+                    println!("Client close requested (rug2d::Rug2dWindow::check_events())");
+                    should_quit = true;
                 },
                 _ => {}
             }
         }
-        false
+        should_quit
     }
 }
