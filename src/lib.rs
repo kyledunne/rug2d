@@ -5,32 +5,35 @@ use sdl2::event::Event;
 use sdl2::keyboard::Keycode;
 use sdl2::video::GLProfile;
 
-static DEFAULT_WINDOW_SIZE: [u32; 2] = [1024, 768];
-static mut GRAPHICS_INITIALIZED: bool = false;
+static FPS: u32 = 60;
 
 #[cfg(test)]
 mod tests {
     #[test]
     fn it_works() {
-        use super::*;
-        test_fn();
+        super::test_fn();
         assert_eq!(2 + 2, 4);
     }
 }
 
 pub fn info() {
+    println!("Rug2d version 0.1.0");
 }
 
 pub fn test_fn() {
-    let mut window = init_window("Yoooooo...", 1000, 500);
+    let mut window = init_window("Yoooooo...", 1024, 768);
     'running: loop {
         window.render();
         if window.check_events() {
             break 'running;
         }
-        //TODO set up a sync() method that considers the nanos since the last call to sync
-        ::std::thread::sleep(::std::time::Duration::new(0, 1_000_000_000u32 / 60));
+        wait_until_next_frame(FPS);
     }
+}
+
+pub fn wait_until_next_frame(fps: u32) {
+    //TODO set up a sync() method that considers the nanos since the last call to sync
+    ::std::thread::sleep(::std::time::Duration::new(0, 1_000_000_000u32 / fps));
 }
 
 pub fn init_window(title: &str, w: u32, h: u32) -> Rug2dWindow {
