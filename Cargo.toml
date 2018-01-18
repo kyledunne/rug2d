@@ -10,8 +10,10 @@ license = "Apache-2.0"
 readme = "README.md"
 maintenance = { status = "experimental" }
 
-[dependencies]
-sdl2 = "0.31.0"
+[dependencies.sdl2]
+    version = "0.31"
+    default-features = false
+    features = ["ttf","image"]
 
 [dependencies.gl]
 git = "https://github.com/bjz/gl-rs"
