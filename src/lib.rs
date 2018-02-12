@@ -68,10 +68,8 @@ pub fn init_window(title: &str, width: u32, height: u32) {
                                                      0.0, 0.0, 0.0, 1.0);
 
     unsafe {
-        let cstring = std::ffi::CString::new(String::from("scalingMat")).unwrap();
+        let cstring = CString::new("scalingMat").unwrap();
         let scaling_mat_id = gl::GetUniformLocation(program, cstring.as_ptr());
-        //TODO finish doing this (w/ http://www.opengl-tutorial.org/beginners-tutorials/tutorial-3-matrices/#scaling-matrices and
-        //https://docs.rs/gl/0.10.0/gl/fn.UniformMatrix4fv.html)
         gl::ProgramUniformMatrix4fv(program, scaling_mat_id, 1, gl::FALSE, &scaling_mat[0][0]);
 
 
