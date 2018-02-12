@@ -11,7 +11,8 @@ readme = "README.md"
 maintenance = { status = "experimental" }
 
 [dependencies]
-gl = "0.6.0"
+gl = "0.10.0"
+glm = "0.2.3"
 
 [dependencies.sdl2]
     version = "0.31"
